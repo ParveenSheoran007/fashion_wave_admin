@@ -47,10 +47,10 @@ class ProductService {
   Future<ProductModel> updateProduct(String productId, ProductModel product) async {
     final response = await http.put(
       Uri.parse('${ApiEndpoints.product}/$productId'),
-      headers: {
-        'Content-Type': 'application/json',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-1',
       },
-      body: json.encode(product.toJson()),
+      body: jsonEncode(product.toJson()),
     );
 
     if (response.statusCode == 200) {
@@ -58,5 +58,4 @@ class ProductService {
     } else {
       throw Exception('Failed to update product');
     }
-  }
-}
+  }}

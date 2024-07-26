@@ -27,7 +27,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
       final name = _nameController.text;
       final price = double.tryParse(_priceController.text) ?? 0.0;
 
-      // Add product using the provider
       Provider.of<ProductProvider>(context, listen: false).addProduct(name as ProductModel, price);
 
       Navigator.pop(context);
