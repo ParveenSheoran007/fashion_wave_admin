@@ -1,10 +1,11 @@
-import 'package:fashion_wave_admin/product/provider/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:fashion_wave_admin/product/provider/product_provider.dart';
 import 'add_product_screen.dart';
+import 'edit_product_screen.dart';
 
 class ProductListScreen extends StatefulWidget {
-  const ProductListScreen({super.key});
+  const ProductListScreen({Key? key}) : super(key: key);
 
   @override
   _ProductListScreenState createState() => _ProductListScreenState();
@@ -65,14 +66,17 @@ class _ProductListScreenState extends State<ProductListScreen> {
                       IconButton(
                         icon: const Icon(Icons.edit),
                         onPressed: () {
-                          // Navigate to the edit product screen
-                          // You can pass the product details to the edit screen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditProductScreen(product: product),
+                            ),
+                          );
                         },
                       ),
                       IconButton(
                         icon: const Icon(Icons.delete),
                         onPressed: () {
-                          // Call the delete method from the provider
                           productProvider.deleteProduct(product.id);
                         },
                       ),

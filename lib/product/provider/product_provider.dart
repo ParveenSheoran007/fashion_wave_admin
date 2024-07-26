@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 class ProductProvider with ChangeNotifier {
   final ProductService productService = ProductService();
 
-  List<ProductModel> productModel = [];
-  List<ProductModel> get products => productModel;
+  List<ProductModel> _products = [];
+  List<ProductModel> get products => _products;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
@@ -16,8 +16,8 @@ class ProductProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      productModel = await productService.fetchProducts();
-      print('Products loaded: ${productModel.length}');
+      _products = await productService.fetchProducts();
+      print('Products loaded: ${_products.length}');
     } catch (e) {
       print('Error fetching products: $e');
     } finally {
@@ -32,7 +32,7 @@ class ProductProvider with ChangeNotifier {
 
     try {
       final newProduct = await productService.addProduct(product);
-      productModel.add(newProduct);
+      _products.add(newProduct);
     } catch (error) {
       print('Failed to add product: $error');
     } finally {
@@ -47,7 +47,7 @@ class ProductProvider with ChangeNotifier {
 
     try {
       await productService.deleteProduct(productId);
-      productModel.removeWhere((product) => product.id == productId);
+      _products.removeWhere((product) => product.id == productId);
     } catch (error) {
       print('Failed to delete product: $error');
     } finally {
@@ -59,12 +59,11 @@ class ProductProvider with ChangeNotifier {
   Future<void> updateProduct(String productId, ProductModel product) async {
     _isLoading = true;
     notifyListeners();
-
     try {
       final updatedProduct = await productService.updateProduct(productId, product);
-      final index = productModel.indexWhere((p) => p.id == productId);
+      final index = _products.indexWhere((p) => p.id == productId);
       if (index != -1) {
-        productModel[index] = updatedProduct;
+        _products[index] = updatedProduct;
       }
     } catch (error) {
       print('Failed to update product: $error');
@@ -72,5 +71,4 @@ class ProductProvider with ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
-  }
-}
+  }}
