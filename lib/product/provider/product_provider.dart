@@ -1,6 +1,7 @@
 import 'package:fashion_wave_admin/product/model/product_model.dart';
 import 'package:fashion_wave_admin/product/service/product_service.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ProductProvider with ChangeNotifier {
   final ProductService productService = ProductService();
@@ -26,10 +27,9 @@ class ProductProvider with ChangeNotifier {
     }
   }
 
-  Future<void> addProduct(ProductModel product, double price) async {
+  Future<void> addProduct(ProductModel product) async {
     _isLoading = true;
     notifyListeners();
-
     try {
       final newProduct = await productService.addProduct(product);
       productModel.add(newProduct);
@@ -42,19 +42,16 @@ class ProductProvider with ChangeNotifier {
   }
 
   Future<void> deleteProduct(String productId) async {
-    _isLoading = true;
-    notifyListeners();
-
     try {
       await productService.deleteProduct(productId);
       productModel.removeWhere((product) => product.id == productId);
+      notifyListeners();
     } catch (error) {
       print('Failed to delete product: $error');
-    } finally {
-      _isLoading = false;
-      notifyListeners();
     }
   }
+
+
 
   Future<void> updateProduct(String productId, ProductModel product) async {
     _isLoading = true;
@@ -62,7 +59,7 @@ class ProductProvider with ChangeNotifier {
 
     try {
       final updatedProduct = await productService.updateProduct(productId, product);
-      final index = productModel.indexWhere((p) => p.id == productId);
+      final index = productModel.indexWhere((product) => product.id == productId);
       if (index != -1) {
         productModel[index] = updatedProduct;
       }

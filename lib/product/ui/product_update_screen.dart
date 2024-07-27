@@ -3,33 +3,41 @@ import 'package:fashion_wave_admin/product/provider/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class AddProductScreen extends StatefulWidget {
-  const AddProductScreen({super.key});
+class ProductUpdateScreen extends StatefulWidget {
+  const ProductUpdateScreen(
+      {super.key,required this.productModel});
+
+
+  final ProductModel productModel;
 
   @override
-  _AddProductScreenState createState() => _AddProductScreenState();
+  ProductUpdateScreenState createState() => ProductUpdateScreenState();
 }
 
-class _AddProductScreenState extends State<AddProductScreen> {
+class ProductUpdateScreenState extends State<ProductUpdateScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _priceController = TextEditingController();
-  final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController categoryController = TextEditingController();
+  late TextEditingController editNameController = TextEditingController();
+  late TextEditingController editPriceController = TextEditingController();
+  late TextEditingController editDescriptionController = TextEditingController();
+  late TextEditingController editCategoryController = TextEditingController();
   late ProductProvider productProvider;
 
   @override
   void initState() {
     productProvider = Provider.of<ProductProvider>(context, listen: false);
+    editNameController = TextEditingController(text: widget.productModel.name);
+    editPriceController = TextEditingController(text: widget.productModel.price);
+    editDescriptionController = TextEditingController(text: widget.productModel.description);
+    editCategoryController = TextEditingController(text: widget.productModel.category);
     super.initState();
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _priceController.dispose();
-    descriptionController.dispose();
-    categoryController.dispose();
+    editNameController.dispose();
+    editPriceController.dispose();
+    editDescriptionController.dispose();
+    editCategoryController.dispose();
     super.dispose();
   }
 
@@ -42,6 +50,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
   //     Navigator.pop(context);
   //   }
   // }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +66,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
           child: Column(
             children: [
               TextFormField(
-                controller: _nameController,
+                controller: editNameController,
                 decoration: const InputDecoration(labelText: 'Product Name'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -66,7 +76,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 },
               ),
               TextFormField(
-                controller: _priceController,
+                controller: editPriceController,
                 decoration: const InputDecoration(labelText: 'Price'),
                 keyboardType: TextInputType.number,
                 validator: (value) {
@@ -77,7 +87,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 },
               ),
               TextFormField(
-                controller: descriptionController,
+                controller: editDescriptionController,
                 decoration: const InputDecoration(labelText: 'Description'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -87,7 +97,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 },
               ),
               TextFormField(
-                controller: categoryController,
+                controller: editCategoryController,
                 decoration: const InputDecoration(labelText: 'Category'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -100,12 +110,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
               ElevatedButton(
                 onPressed: () async {
                   ProductModel productModel = ProductModel(
-                    name: _nameController.text,
-                    price: _priceController.text,
-                    description: descriptionController.text,
-                    category: categoryController.text,
+                    name: editNameController.text,
+                    price: editPriceController.text,
+                    description: editDescriptionController.text,
+                    category: editCategoryController.text,
                   );
-                  await productProvider.addProduct(productModel);
+                  await productProvider.updateProduct(widget.productModel.id!,productModel);
                 },
                 child: const Text('Add Product'),
               ),
